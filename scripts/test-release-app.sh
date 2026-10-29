@@ -433,6 +433,7 @@ check "a UI release in a repo that pins nothing is refused" refuses "needs a com
 check "a UI release on another lineage than the repo pins is refused" refuses "pins lineage '0.1', but tag v0.2.1" \
   kind example/fork v0.2.1
 for pin in "$here"/../lineage/*/*.json; do
+  [ -e "$pin" ] || continue
   repository="${pin#"$here"/../lineage/}" repository="${repository%.json}"
   check "the pin of $repository resolves its lineage's UI releases" test "$(GITHUB_REPOSITORY="$repository" \
     bash "$here/release-kind.sh" "v$(jq -r .lineage "$pin").1" | sed -n 2p)" = "parent_tag=$(jq -r .parent_tag "$pin")"
