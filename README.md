@@ -47,7 +47,7 @@ A release also carries assets that are not installers: the `.app.tar.gz` bundles
 To check a download, put it in one folder with `SHA256SUMS` and `SHA256SUMS.minisig`, and run [minisign](https://jedisct1.github.io/minisign/) and then `sha256sum` there:
 
 ```sh
-minisign -VHm SHA256SUMS -P RWTMgl5pLxSOVpkRiS5CMlFkrn7enASWilDEzRpfPeTBcBBJXcdu/rFO
+minisign -VHm SHA256SUMS -P <key>
 sha256sum --check --ignore-missing SHA256SUMS
 ```
 

@@ -1,14 +1,14 @@
 {
-  "identifier": "co.unyt.unyt.sandbox",
-  "productName": "Unyt Sandbox",
-  "mainBinaryName": "unyt-sandbox",
+  "identifier": "co.unyt.unyt",
+  "productName": "Unyt",
+  "mainBinaryName": "unyt",
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDU2OEUxNDJGNjk1RTgyQ0MKUldUTWdsNXBMeFNPVnBrUmlTNUNNbEZrcm43ZW5BU1dpbERFelJwZlBlVEJjQkJKWGNkdS9yRk8K"
+      "pubkey": "TO BE SET: the public half of this repo's own update key"
     },
     "deep-link": {
-      "mobile": [{ "scheme": ["unyt-sandbox"] }],
-      "desktop": { "schemes": ["unyt-sandbox"] }
+      "mobile": [{ "scheme": ["unyt"] }],
+      "desktop": { "schemes": ["unyt"] }
     }
   }
 }

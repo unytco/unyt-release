@@ -1,15 +1,15 @@
 {
-  "name": "TestNet",
+  "name": "MainNet",
   "build": {
-    "UNYT_JOINING_SERVICE_URL": "https://joining.unyt.dev",
-    "VITE_MIGRATION_SERVICE_URL": "https://migration.unyt.dev",
-    "VITE_HOT_BRIDGE_URL": "https://hot-bridge.unyt.dev",
-    "VITE_HOT_LOCK_VAULT": "0xedddbef1b6deb820888661829ecf70e9621328b4",
-    "VITE_ETH_NETWORK": "base-sepolia",
+    "UNYT_JOINING_SERVICE_URL": "https://joining.unyt.co",
+    "VITE_MIGRATION_SERVICE_URL": "https://migration.unyt.co",
+    "VITE_HOT_BRIDGE_URL": "https://hot-bridge.unyt.co",
+    "VITE_HOT_LOCK_VAULT": "TO BE SET: MainNet's HOT lock vault",
+    "VITE_ETH_NETWORK": "mainnet",
     "VITE_VOUCHER_SERVICE_URL": "https://vouchers.holo.host",
-    "UNYT_BOOTSTRAP_URL": "https://relay.unyt.dev",
-    "UNYT_RELAY_URL": "https://relay.unyt.dev",
-    "UNYT_AUTH_SERVER_URL": "https://auth.unyt.dev",
+    "UNYT_BOOTSTRAP_URL": "https://relay.unyt.co",
+    "UNYT_RELAY_URL": "https://relay.unyt.co",
+    "UNYT_AUTH_SERVER_URL": "https://auth.unyt.co",
     "UNYT_AUTH_RELAY": "1"
   }
 }

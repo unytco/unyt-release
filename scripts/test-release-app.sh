@@ -49,9 +49,13 @@ else
   done <<<"$waiting"
 fi
 
-check "the README checks downloads against the key identity.json pins" test \
-  "$(sed -n 's/^minisign -VHm SHA256SUMS -P //p' "$here/../README.md")" = \
-  "$(jq -r .plugins.updater.pubkey "$here/../identity.json" | base64 -d | sed -n 2p)"
+readme_key="$(sed -n 's/^minisign -VHm SHA256SUMS -P //p' "$here/../README.md")"
+if grep -qxF "identity.json has not set plugins.updater.pubkey yet" <<<"$waiting"; then
+  check "the README names no key while identity.json has not set one" test "$readme_key" = "<key>"
+else
+  check "the README checks downloads against the key identity.json pins" test "$readme_key" = \
+    "$(jq -r .plugins.updater.pubkey "$here/../identity.json" | base64 -d | sed -n 2p)"
+fi
 
 # A repo of fixture files to break: release-app.sh reads identity.json and network.json beside scripts/.
 repo="$tmp/repo"
