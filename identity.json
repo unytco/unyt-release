@@ -4,7 +4,7 @@
   "mainBinaryName": "unyt",
   "plugins": {
     "updater": {
-      "pubkey": "TO BE SET: the public half of this repo's own update key"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ3MEU3MkE4RjFCRjBFOTEKUldTUkRyL3hxSElPMTBGQmhoRVIvWGJ1R2ovbkx4NXVsVWRuTENsMVdkcjErWll4cjUyK09yZ2wK"
     },
     "deep-link": {
       "mobile": [{ "scheme": ["unyt"] }],

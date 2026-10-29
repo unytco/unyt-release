@@ -51,7 +51,7 @@ A release also carries assets that are not installers. Installing the app needs 
 Put the download in one folder with `SHA256SUMS` and `SHA256SUMS.minisig`. Then run [minisign](https://jedisct1.github.io/minisign/) and `sha256sum` in that folder:
 
 ```sh
-minisign -VHm SHA256SUMS -P <key>
+minisign -VHm SHA256SUMS -P RWSRDr/xqHIO10FBhhER/XbuGj/nLx5ulUdnLCl1Wdr1+ZYxr52+Orgl
 sha256sum --check --ignore-missing SHA256SUMS
 ```
 
