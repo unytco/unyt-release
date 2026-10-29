@@ -113,8 +113,6 @@ If `network.json` sets `UNYT_BOOTSTRAP_URL`, `UNYT_RELAY_URL` or `UNYT_AUTH_SERV
 
 - [Unyt Documentation](https://unyt.co/docs/)
 - [Unyt Blog](https://unyt.co/blog/)
-- [Unyt Dictionary](./testing_docs/4_2_unyt-dictionary.md)
-- [Intro to Smart Agreements (Three Layers)](./testing_docs/4_1_intro_to_smart_agreements.md)
 - [Smart Agreement Code Library](https://github.com/unytco/smart_agreement_library)
 - [Holochain DEV.HC Discord](https://discord.com/invite/k55DS5dmPH): the Unyt channel is under Projects
 - [Feedback / Issues](https://github.com/orgs/unytco/projects/5/views/1)
