@@ -2,9 +2,7 @@
 
 #### links to related docs
 
-- [Invitation to Play](./1_0_invite.md)
 - [Unyt Setup](../README.md)
-- [Detailed Documentation](./5_0_phase_5_testing_details.md)
 - [Unyt Dictionary](./4_2_unyt-dictionary.md)
 - [Intro to Smart Agreements (Three Layers)](./4_1_intro_to_smart_agreements.md)
 - [Templates and Smart Agreements Library Repo](https://github.com/unytco/smart_agreement_library)
