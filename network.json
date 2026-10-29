@@ -4,7 +4,7 @@
     "UNYT_JOINING_SERVICE_URL": "https://joining.unyt.co",
     "VITE_MIGRATION_SERVICE_URL": "https://migration.unyt.co",
     "VITE_HOT_BRIDGE_URL": "https://hot-bridge.unyt.co",
-    "VITE_HOT_LOCK_VAULT": "TO BE SET: MainNet's HOT lock vault",
+    "VITE_HOT_LOCK_VAULT": "0x8334c5f8fdb1200d80210c9ccc314664b51a0bcd",
     "VITE_ETH_NETWORK": "mainnet",
     "VITE_VOUCHER_SERVICE_URL": "https://vouchers.holo.host",
     "UNYT_BOOTSTRAP_URL": "https://relay.unyt.co",
