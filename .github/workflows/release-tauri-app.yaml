@@ -356,9 +356,10 @@ jobs:
         shell: bash
         run: |
           cargo install artifact-signing-cli@0.12.0
-          signtool="$(ls 'C:/Program Files (x86)/Windows Kits/10/bin/'*/x64/signtool.exe | sort | tail -1)"
-          [ -n "$signtool" ] || { echo "::error::this runner has no signtool" >&2; exit 1; }
-          echo "SIGNTOOL_PATH=$(cygpath -w "$signtool")" >>"$GITHUB_ENV"
+          shopt -s nullglob
+          signtools=('C:/Program Files (x86)/Windows Kits/10/bin/'*/x64/signtool.exe)
+          [ "${#signtools[@]}" -gt 0 ] || { echo "::error::this runner has no signtool" >&2; exit 1; }
+          echo "SIGNTOOL_PATH=$(cygpath -w "${signtools[-1]}")" >>"$GITHUB_ENV"
 
       - name: The pinned app, at the tag's version, as identity.json names it and built for network.json
         shell: bash
