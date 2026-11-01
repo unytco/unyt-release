@@ -474,6 +474,9 @@ jobs:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          # Tauri logs the Windows sign command's output only at debug level, so a signing failure is
+          # otherwise just "failed to run artifact-signing-cli".
+          TAURI_CLI_VERBOSITY: ${{ runner.os == 'Windows' && '1' || '' }}
           VITE_COMMIT_SHA: ${{ needs.build-happ.outputs.productName }}-${{
             needs.build-happ.outputs.appVersion }}-${{ matrix.config.arc_factor }}-arc
           APP_VERSION: ${{ needs.build-happ.outputs.appVersion }}
