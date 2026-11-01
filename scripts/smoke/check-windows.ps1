@@ -23,11 +23,11 @@
   %LOCALAPPDATA%\<the identifier in identity.json>\logs.
 
   STILL NOT COVERED, because a runner is a build image and not a user's PC:
-  SmartScreen's "unknown publisher" block (our installers are unsigned, and CI
-  installs silently), a machine WITHOUT the WebView2 runtime (Tauri loads it
-  through COM, so no import check sees it), and a redistributable the build
-  machine had. Those three are the hand check —
-  docs/windows-clean-machine-check.md.
+  what SmartScreen does with the download (the installers are Authenticode-
+  signed, but a young certificate has no reputation yet, and CI installs
+  silently), a machine WITHOUT the WebView2 runtime (Tauri loads it through
+  COM, so no import check sees it), and a redistributable the build machine
+  had. Those three are the hand check — docs/windows-clean-machine-check.md.
 
 .PARAMETER Artifact
   Path to the NSIS installer (a plain .exe, not -setup.exe) or the .msi.
@@ -297,11 +297,12 @@ function Test-IsVcRuntime {
   return ($Dll -match '^(vcruntime|msvcp|concrt|vcomp)\d*.*\.dll$')
 }
 
-# DELIBERATELY AMBER: we ship unsigned, and a permanently red check is one people
-# scroll past. A declared-state tripwire — set it $true the day a certificate is
-# wired in, and it goes red if reality and the declaration ever diverge. Not a
-# skip: a skip could not see signed-but-broken.
-$script:ExpectWindowsSigned = $false
+# A declared-state tripwire: release-tauri-app.yaml signs every Windows binary
+# and installer with Azure Artifact Signing, so an unsigned installer means the
+# signing broke, and the check goes red. While the builds shipped unsigned this
+# was $false and the check was amber. Not a skip: a skip could not see
+# signed-but-broken.
+$script:ExpectWindowsSigned = $true
 
 function Test-SignatureVerdict {
   param(
@@ -733,8 +734,8 @@ Register-Check -Id 'executable' -Name 'installs the application executable' -Bod
   return $true
 }
 
-# See $script:ExpectWindowsSigned: amber while we ship unsigned, red the day
-# reality and that declaration diverge.
+# See $script:ExpectWindowsSigned: red when reality and that declaration
+# diverge, in either direction.
 Register-Check -Id 'signed' -Name 'the installer is Authenticode-signed and trusted' -Body {
   # Get-AuthenticodeSignature is the status source: signtool's exit status
   # collapses "unsigned" and "signed but broken" into one non-zero.

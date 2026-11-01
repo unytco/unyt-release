@@ -348,6 +348,18 @@ jobs:
         if: runner.os == 'Windows'
         run: choco install -y jq
 
+      - name: Install the Windows code signer
+        # Azure Artifact Signing: the key never leaves Azure, and this CLI drives the runner's signtool
+        # against it. Pinned by version, which crates.io never changes. signtool: the newest Windows SDK
+        # on the runner, since the CLI's own default names one SDK version.
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          cargo install artifact-signing-cli@0.12.0
+          signtool="$(ls 'C:/Program Files (x86)/Windows Kits/10/bin/'*/x64/signtool.exe | sort | tail -1)"
+          [ -n "$signtool" ] || { echo "::error::this runner has no signtool" >&2; exit 1; }
+          echo "SIGNTOOL_PATH=$(cygpath -w "$signtool")" >>"$GITHUB_ENV"
+
       - name: The pinned app, at the tag's version, as identity.json names it and built for network.json
         shell: bash
         env:
@@ -392,6 +404,32 @@ jobs:
           jq --arg v "$MSI_VERSION" '.bundle.windows.wix.version = $v' "$conf" >"$conf.tmp"
           mv "$conf.tmp" "$conf"
 
+      - name: Sign every Windows binary and installer with Azure Artifact Signing
+        # Written here, never committed: a local build has neither the signer nor its credential. Tauri runs
+        # the command on the main binary, each sidecar, the NSIS installer and the MSI, before the updater
+        # signs them. These three names are public; the credential is the build step's AZURE_* env. A name
+        # not set yet stops the build here, as a TO BE SET in network.json stops the release.
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          AZURE_ARTIFACT_SIGNING_ENDPOINT: https://eus.codesigning.azure.net
+          AZURE_ARTIFACT_SIGNING_ACCOUNT: GeekGene
+          AZURE_ARTIFACT_SIGNING_CERTIFICATE_PROFILE: UnytPub
+        run: |
+          for value in "$AZURE_ARTIFACT_SIGNING_ENDPOINT" "$AZURE_ARTIFACT_SIGNING_ACCOUNT" \
+            "$AZURE_ARTIFACT_SIGNING_CERTIFICATE_PROFILE"; do
+            case "$value" in "TO BE SET"*)
+              echo "::error::release-tauri-app.yaml has not set the Azure Artifact Signing endpoint, account and certificate profile" >&2
+              exit 1 ;;
+            esac
+          done
+          conf=unyt/src-tauri/tauri.conf.json
+          jq --arg e "$AZURE_ARTIFACT_SIGNING_ENDPOINT" --arg a "$AZURE_ARTIFACT_SIGNING_ACCOUNT" \
+            --arg c "$AZURE_ARTIFACT_SIGNING_CERTIFICATE_PROFILE" --arg d "$(jq -r .productName tauri.merged.json)" \
+            '.bundle.windows.signCommand = {cmd: "artifact-signing-cli", args: ["-e", $e, "-a", $a, "-c", $c, "-d", $d, "%1"]}' \
+            "$conf" >"$conf.tmp"
+          mv "$conf.tmp" "$conf"
+
       - name: Turn on signed updater artifacts
         # Written here, never committed: the bundler refuses to build without the signing key once
         # this is on, and no local build holds it.
@@ -431,6 +469,10 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID_EMAIL }}
           APPLE_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # The service principal that may ask Azure Artifact Signing to sign. It holds no key.
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           VITE_COMMIT_SHA: ${{ needs.build-happ.outputs.productName }}-${{
             needs.build-happ.outputs.appVersion }}-${{ matrix.config.arc_factor }}-arc
           APP_VERSION: ${{ needs.build-happ.outputs.appVersion }}

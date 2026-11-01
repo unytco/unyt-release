@@ -14,7 +14,7 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 [ "$#" -gt 0 ] || fail "usage: check-build-credentials.sh <workflow>..."
 yq --version 2>/dev/null | grep -q 'mikefarah.* v4\.' || fail "this check needs mikefarah's yq v4 on PATH"
 build_secrets='["unyt_deploy_key", "apple_certificate", "apple_certificate_password", "apple_dev_identity",
-  "apple_id_email", "apple_id_password", "apple_team_id"]'
+  "apple_id_email", "apple_id_password", "apple_team_id", "azure_tenant_id", "azure_client_id", "azure_client_secret"]'
 credential_holders() { # <workflow file name>
   case "$1" in
     release-tauri-app.yaml)

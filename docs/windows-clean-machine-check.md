@@ -9,7 +9,7 @@ CI covers most of the Windows question already, in two phases of [`../.github/wo
 What is still out of CI's reach is the **machine**. A GitHub-hosted runner is a build image with a decade of redistributables on it, and it has neither Windows Sandbox nor nested virtualization, so a pristine-machine check needs self-hosted infrastructure — not worth standing up for one check per release. That leaves three failure modes CI cannot see, and all three end with a user seeing nothing at all:
 
 - **The WebView2 runtime is missing.** Tauri loads it through COM, not as a linked import, so nothing in the import check can see it — and every runner already has it, so the launch lanes cannot miss it either. Windows 11 ships it; a Windows 10 machine may not have it.
-- **SmartScreen refuses the download.** Our builds are unsigned (see [`signing.md`](signing.md) — there is an Apple Developer ID and no Windows certificate), so a real user meets an "unknown publisher" block before any of our code runs. CI installs silently and never meets it.
+- **SmartScreen warns about the download.** The installers are Authenticode-signed (see [`signing.md`](signing.md)), so the signer's name shows rather than "unknown publisher", but SmartScreen also weighs how many machines have run files from that certificate. A young certificate still draws a "Windows protected your PC" warning until it has reputation. CI installs silently and never meets it.
 - **A runtime the build machine had and the user does not** — the Visual C++ redistributable being the usual one.
 
 ## The procedure
@@ -17,7 +17,7 @@ What is still out of CI's reach is the **machine**. A GitHub-hosted runner is a 
 Start from a VM snapshot taken before any Unyt build was ever installed, and roll back to it afterwards. If you are reusing a machine instead, reset it first with [`windows-wipe.md`](windows-wipe.md). An uninstall alone does not give you a clean machine, because by default the uninstaller keeps the app's data. The NSIS uninstaller has a **Delete the application data** box, off by default, that removes `%APPDATA%\<identifier>\` and `%LOCALAPPDATA%\<identifier>\`.
 
 1. **Copy the installer in.** Take `unyt_<version>_<product>_default-arc_x64_windows.exe` from the release, where `<product>` is `productName` in [`identity.json`](../identity.json) with each space as a dot, and copy it to the VM. Do not build on the VM: the artifact under test is the one users download.
-2. **Note what SmartScreen does.** Record whether it warns, blocks, or stays quiet, and how many clicks it takes to proceed. This is the user's first impression and it changes the day the installer is signed.
+2. **Note what SmartScreen does.** Record whether it warns, blocks, or stays quiet, whether it names the publisher, and how many clicks it takes to proceed. This is the user's first impression, and it changes as the signing certificate earns reputation.
 3. **Install by double-clicking**, the way a user would — not with `/S`. CI already covers the silent path.
 4. **Launch it.** Watch for a window, then for the window to paint. A window that opens black is a UI-bundle failure, not a slow start — and one CI would have caught on a runner, so on this machine it points at WebView2 or a missing redistributable rather than at the build.
 5. **Read the log.** There is no console: release builds set `windows_subsystem = "windows"`, so redirected output is empty. The log is at `%LOCALAPPDATA%\<identifier>\logs\unyt.v*.log.*`, where `<identifier>` is `identifier` in [`identity.json`](../identity.json):

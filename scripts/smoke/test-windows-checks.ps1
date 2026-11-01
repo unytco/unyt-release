@@ -265,7 +265,7 @@ try {
   # a plain skip would have lost it, and no declaration excuses it.
   Assert-That 'signed and trusted -> pass' `
   (Test-SignatureVerdict -Status 'Valid' -SignerSubject 'CN=Unyt').Result 'pass'
-  Assert-That 'unsigned + we expect unsigned -> warn (today)' `
+  Assert-That 'unsigned + we expect unsigned -> warn (as shipped before signing)' `
   (Test-SignatureVerdict -Status 'NotSigned' -ExpectSigned $false).Result 'warn'
   Assert-That 'unsigned + we expect SIGNED -> FAIL (signing broke)' `
   (Test-SignatureVerdict -Status 'NotSigned' -ExpectSigned $true).Result 'FAIL'
@@ -288,7 +288,7 @@ try {
   Assert-True 'the expect-signed failure says signing has broken' `
   ((Test-SignatureVerdict -Status 'NotSigned' -ExpectSigned $true).Message -match 'signing has broken')
 
-  Assert-False 'the shipped declaration expects unsigned' $script:ExpectWindowsSigned
+  Assert-True 'the shipped declaration expects signed' $script:ExpectWindowsSigned
 
   $script:Results.Clear()
   Invoke-Check 'warns' { 'warn' }

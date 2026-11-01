@@ -859,8 +859,8 @@ jobs:
           UNYT_SMOKE_RESULTS: ${{ runner.temp }}\results-exe
         run: pwsh -NoProfile -File scripts/smoke/check-windows.ps1 -Only executable -Artifact $env:EXE
 
-      # Deliberately amber: we ship unsigned, so `warn`. Red the day reality and
-      # $script:ExpectWindowsSigned disagree.
+      # Red when reality and $script:ExpectWindowsSigned disagree: the release
+      # signs with Azure Artifact Signing, so an unsigned installer is a broken build.
       - name: "the installer is Authenticode-signed and trusted (.exe)"
         if: ${{ !cancelled() && steps.download-exe.outcome == 'success' }}
         shell: pwsh
