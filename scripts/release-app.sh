@@ -74,9 +74,10 @@ check_identity() {
     and (.[0].scheme | type == "array" and length == 1 and (.[0] | type == "string"))' \
     "$IDENTITY" >/dev/null || problems+=("identity.json names no one mobile deep-link scheme")
   # The release writes these into the app's tauri.conf.json, and identity.json merges over it.
-  [ "$(jq -c -n "$merge"' $written | merge_patch($identity[0]) | [.version, .bundle.createUpdaterArtifacts, .bundle.windows.wix.version]' \
-    --argjson written '{"version": "0.0.0", "bundle": {"createUpdaterArtifacts": true, "windows": {"wix": {"version": "0.0.0.0"}}}}' \
-    --slurpfile identity "$IDENTITY")" = '["0.0.0",true,"0.0.0.0"]' ] ||
+  [ "$(jq -c -n "$merge"' $written | merge_patch($identity[0])
+      | [.version, .bundle.createUpdaterArtifacts, .bundle.windows.wix.version, .bundle.windows.signCommand]' \
+    --argjson written '{"version": "0.0.0", "bundle": {"createUpdaterArtifacts": true, "windows": {"wix": {"version": "0.0.0.0"}, "signCommand": "sign"}}}' \
+    --slurpfile identity "$IDENTITY")" = '["0.0.0",true,"0.0.0.0","sign"]' ] ||
     problems+=("identity.json sets the version or the bundle settings the release writes")
 }
 

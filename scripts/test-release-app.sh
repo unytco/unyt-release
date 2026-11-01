@@ -149,7 +149,7 @@ for set in '.plugins["deep-link"].mobile[0].scheme += ["other"]' 'del(.plugins["
   broken "an identity whose deep links are $set is refused" "names no one mobile deep-link scheme" identity.json "$set"
 done
 for set in '.version = "9.9.9"' '.bundle = null' '.bundle.createUpdaterArtifacts = false' '.bundle.windows = null' \
-  '.bundle.windows.wix.version = "1.0.0.0"'; do
+  '.bundle.windows.wix.version = "1.0.0.0"' '.bundle.windows.signCommand = "signtool %1"'; do
   broken "an identity that sets $set is refused" "sets the version or the bundle settings the release writes" \
     identity.json "$set"
 done
@@ -617,7 +617,7 @@ check "the product, the update key and the build records come from the merged co
   and (.jobs["build-happ"].steps[] | select(.id == "updater").run
     == "bash scripts/updater-signing.sh tauri.merged.json >> \"$GITHUB_OUTPUT\"")
   and any(.jobs["release-tauri-app"].steps[]; .run // "" | test("updater-provenance.sh tauri.merged.json "))
-  and ([.. | strings | select(test("src-tauri/tauri.conf.json"))] - [.. | strings | select(test("wix.version|createUpdaterArtifacts"))]
+  and ([.. | strings | select(test("src-tauri/tauri.conf.json"))] - [.. | strings | select(test("wix.version|createUpdaterArtifacts|signCommand"))]
     | length == 0)'
 check "the release names each updater asset as the app does for its product" wired '
   .jobs["build-happ"].steps[] | select(.run // "" | startswith("bash scripts/updater-asset-names.sh"))
